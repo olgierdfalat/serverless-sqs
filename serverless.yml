@@ -1,0 +1,59 @@
+service: serverless-sqs 
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  environment: ${file(env.yml):${self:custom.stage}, file(env.yml):default}
+  region: ${opt:region, self:provider.region}
+
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: dev
+  region: eu-central-1
+  profile: serverless
+  stackName: sls-sqs-stack
+
+  # Environment variables
+  environment:
+    region: ${self:custom.region}
+    accountId: ${self:custom.environment.accountId}
+
+  iamRoleStatements:    
+    - Effect: Allow
+      Action:
+      - sqs:SendMessage
+      - sqs:GetQueueUrl
+      Resource: arn:aws:sqs:${self:custom.region}:*:TestQueue
+
+  
+functions:
+  publish:
+    handler: publisher.handler
+    reservedConcurrency: 10 
+    events:
+      - http:
+          method: post
+          path: publish
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - TestQueue
+              - Arn    
+          batchSize: 1
+  subscribe:
+    handler: subscriber.handler
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - TestQueue
+              - Arn          
+          batchSize: 1          
+
+
+
+# CloudFormation resource templates
+resources:
+  # SQS
+  - ${file(resources/sqs.yml)}

@@ -1,0 +1,5 @@
+Resources:
+  TestQueue:
+    Type: "AWS::SQS::Queue"
+    Properties:
+      QueueName: "TestQueue"

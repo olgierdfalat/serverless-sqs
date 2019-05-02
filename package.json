@@ -1,0 +1,18 @@
+{
+  "name": "serverless-sqs",
+  "version": "1.0.0",
+  "description": "Serverless framework and Simple Queue Service boilerplate",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@me.github.com:olgierdfalat/serverless-sqs.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.447.0"
+  }
+}
